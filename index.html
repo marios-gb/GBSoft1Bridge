@@ -17,14 +17,14 @@ function start()
     var shop = param("shop");
     var serial = param("serial");
 
-    if (!shop || !serial)
+    if (!shop || !softone)
     {
         document.body.innerHTML = "Missing shop or serial parameter";
         return;
     }
 
     var service =
-      "https://" + serial +
+      "https://" + softone +
       ".s1cloud.net/s1services/JS/ShopifyV2.Auth/GetClient";
 
     var xhr = new XMLHttpRequest();
@@ -42,7 +42,7 @@ function start()
                 var clientId = result.client_id;
                 console.log(clientId);
                 var redirectUri =
-                  "https://" + serial +
+                  "https://" + softone +
                   ".s1cloud.net/s1services/JS/ShopifyV2.Auth/GetAccessToken";
 
                 var state =
