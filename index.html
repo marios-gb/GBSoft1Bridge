@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Shopify Authorization</title>
+
+<script>
+
+function param(name)
+{
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function start()
+{
+    var shop = param("shop");
+
+    if (!shop)
+    {
+        document.body.innerHTML = "Missing shop parameter";
+        return;
+    }
+
+    var clientId = "YOUR_CLIENT_ID";
+
+    var redirectUri =
+        "https://YOURSERVER/s1services/JS/ShopifyV2.Auth/GetAccessToken";
+
+    var scope =
+        "read_products,write_products";
+
+    var state =
+        Date.now();
+
+    var url =
+        "https://" + shop +
+        "/admin/oauth/authorize" +
+        "?client_id=" + clientId +
+        "&scope=" + encodeURIComponent(scope) +
+        "&redirect_uri=" + encodeURIComponent(redirectUri) +
+        "&state=" + state;
+
+    window.location.replace(url);
+}
+
+window.onload = start;
+
+</script>
+</head>
+
+<body>
+Redirecting to Shopify...
+</body>
+</html>
