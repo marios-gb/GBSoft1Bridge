@@ -52,8 +52,7 @@ function start()
                   "https://" + shop +
                   "/admin/oauth/authorize" +
                   "?client_id=" + clientId +
-                  "&redirect_uri=" + encodeURIComponent(redirectUri) +
-                  "&state=" + state;
+                  "&redirect_uri=" + encodeURIComponent(redirectUri);
 
                 window.location.replace(url);
             }
