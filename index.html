@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Shopify Authorization</title>
+<title>Shopify Install</title>
 
 <script>
 
@@ -15,33 +15,57 @@ function param(name)
 function start()
 {
     var shop = param("shop");
+    var serial = param("serial");
 
-    if (!shop)
+    if (!shop || !serial)
     {
-        document.body.innerHTML = "Missing shop parameter";
+        document.body.innerHTML = "Missing shop or serial parameter";
         return;
     }
 
-    var clientId = "YOUR_CLIENT_ID";
+    var service =
+      "https://" + serial +
+      ".s1cloud.net/s1services/JS/ShopifyV2.Auth/GetClient";
 
-    var redirectUri =
-        "https://YOURSERVER/s1services/JS/ShopifyV2.Auth/GetAccessToken";
+    var xhr = new XMLHttpRequest();
 
-    var scope =
-        "read_products,write_products";
+    xhr.open("GET", service, true);
 
-    var state =
-        Date.now();
+    xhr.onreadystatechange = function ()
+    {
+        if (xhr.readyState === 4)
+        {
+            if (xhr.status === 200)
+            {
+                var result = JSON.parse(xhr.responseText);
 
-    var url =
-        "https://" + shop +
-        "/admin/oauth/authorize" +
-        "?client_id=" + clientId +
-        "&scope=" + encodeURIComponent(scope) +
-        "&redirect_uri=" + encodeURIComponent(redirectUri) +
-        "&state=" + state;
+                var clientId = result.client_id;
 
-    window.location.replace(url);
+                var redirectUri =
+                  "https://" + serial +
+                  ".s1cloud.net/s1services/JS/ShopifyV2.Auth/GetAccessToken";
+
+                var state =
+                  new Date().getTime();
+
+                var url =
+                  "https://" + shop +
+                  "/admin/oauth/authorize" +
+                  "?client_id=" + clientId +
+                  "&redirect_uri=" + encodeURIComponent(redirectUri) +
+                  "&state=" + state;
+
+                window.location.replace(url);
+            }
+            else
+            {
+                document.body.innerHTML =
+                  "Service error: " + xhr.status;
+            }
+        }
+    };
+
+    xhr.send();
 }
 
 window.onload = start;
@@ -50,6 +74,6 @@ window.onload = start;
 </head>
 
 <body>
-Redirecting to Shopify...
+Redirecting to authorization...
 </body>
 </html>
